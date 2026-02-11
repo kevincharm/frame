@@ -216,6 +216,9 @@ module.exports = {
   clearQRVerifyAddress: (u) => {
     u('main.qr.verifyAddress', () => null)
   },
+  setQRPreferredCameraId: (u, cameraId) => {
+    u('main.qr.preferredCameraId', () => (typeof cameraId === 'string' ? cameraId : ''))
+  },
   setLiveAccountLimit: (u, value) => {
     u('main.ledger.liveAccountLimit', () => value)
   },

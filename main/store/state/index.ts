@@ -154,6 +154,7 @@ const mainState: M = {
   },
   qr: {
     devices: main('qr.devices', {}),
+    preferredCameraId: main('qr.preferredCameraId', ''),
     signRequest: null,
     verifyAddress: null
   },

@@ -122,15 +122,31 @@ const rpc = {
   async requestCameraAccess(cb) {
     try {
       if (process.platform === 'darwin') {
-        const status = await systemPreferences.askForMediaAccess('camera')
-        cb(null, { granted: status })
+        const statusBefore = systemPreferences.getMediaAccessStatus('camera')
+        const prompted = statusBefore === 'not-determined'
+        const granted = prompted
+          ? await systemPreferences.askForMediaAccess('camera')
+          : statusBefore === 'granted'
+        const statusAfter = systemPreferences.getMediaAccessStatus('camera')
+        cb(null, { granted, statusBefore, statusAfter, prompted })
       } else {
         // On other platforms, permission is granted through the browser API
-        cb(null, { granted: true })
+        cb(null, { granted: true, prompted: false })
       }
     } catch (e) {
       log.error('Failed to request camera access:', e)
-      cb(null, { granted: false, error: e.message })
+      cb(null, { granted: false, error: e.message, prompted: false })
+    }
+  },
+  getQRCameraPreference(cb) {
+    cb(null, store('main.qr.preferredCameraId') || '')
+  },
+  setQRCameraPreference(cameraId, cb) {
+    try {
+      store.setQRPreferredCameraId(cameraId)
+      cb(null, { success: true })
+    } catch (e) {
+      cb(e.message || 'Failed to save camera preference')
     }
   },
   // QR Hardware Wallet Methods

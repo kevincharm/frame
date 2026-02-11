@@ -147,12 +147,7 @@ function initTrayWindow() {
       return
     }
 
-    // Restrict media permissions to the tray renderer and trusted local app origins only.
-    if (webContents.id !== windows.tray.webContents.id) {
-      res(false)
-      return
-    }
-
+    // Restrict media permissions to trusted local app origins only.
     const requestingUrl = (details?.requestingUrl || webContents.getURL() || '').toLowerCase()
     const trustedOrigin =
       requestingUrl.startsWith('file://') || (isDev && requestingUrl.startsWith('http://localhost:1234/'))
@@ -165,7 +160,7 @@ function initTrayWindow() {
     const mediaTypes = details?.mediaTypes || []
     const requestsVideo = mediaTypes.includes('video')
     const requestsAudio = mediaTypes.includes('audio')
-    res(requestsVideo && !requestsAudio)
+    res((mediaTypes.length === 0 || requestsVideo) && !requestsAudio)
   })
   windows.tray.setResizable(false)
   windows.tray.setMovable(false)
