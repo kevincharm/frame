@@ -141,13 +141,31 @@ function initTrayWindow() {
   initWindow('tray', trayOpts)
 
   windows.tray.on('closed', () => delete windows.tray)
-  windows.tray.webContents.session.setPermissionRequestHandler((webContents, permission, res) => {
-    // Allow camera/microphone for QR code scanning
-    if (permission === 'media') {
-      res(true)
-    } else {
+  windows.tray.webContents.session.setPermissionRequestHandler((webContents, permission, res, details) => {
+    if (permission !== 'media') {
       res(false)
+      return
     }
+
+    // Restrict media permissions to the tray renderer and trusted local app origins only.
+    if (webContents.id !== windows.tray.webContents.id) {
+      res(false)
+      return
+    }
+
+    const requestingUrl = (details?.requestingUrl || webContents.getURL() || '').toLowerCase()
+    const trustedOrigin =
+      requestingUrl.startsWith('file://') || (isDev && requestingUrl.startsWith('http://localhost:1234/'))
+    if (!trustedOrigin) {
+      res(false)
+      return
+    }
+
+    // QR scanning only needs camera access. Reject requests that include microphone.
+    const mediaTypes = details?.mediaTypes || []
+    const requestsVideo = mediaTypes.includes('video')
+    const requestsAudio = mediaTypes.includes('audio')
+    res(requestsVideo && !requestsAudio)
   })
   windows.tray.setResizable(false)
   windows.tray.setMovable(false)

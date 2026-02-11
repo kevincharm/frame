@@ -377,17 +377,21 @@ export default class QRSigner extends Signer {
     cb(null, true)
   }
 
+  private failSupersededPendingRequest(nextType: 'transaction' | 'message' | 'typedData') {
+    if (!this.pendingSignRequest) return
+
+    const previousRequest = this.pendingSignRequest
+    log.warn('Replacing pending sign request in signer', {
+      oldType: previousRequest.type,
+      oldIndex: previousRequest.index,
+      newType: nextType
+    })
+
+    this.failPendingRequest(new Error('Signing request replaced by a newer request'))
+  }
+
   signMessage(index: number, message: string, cb: Callback<string>) {
-    // Clear stale pending request instead of blocking
-    if (this.pendingSignRequest) {
-      log.warn('Clearing stale pending sign request in signer', {
-        oldType: this.pendingSignRequest.type,
-        oldIndex: this.pendingSignRequest.index
-      })
-      // Don't call callback for old request - it's abandoned
-      this.pendingSignRequest = null
-      this.status = Status.OK
-    }
+    this.failSupersededPendingRequest('message')
 
     const address = this.addresses[index]
     if (!address) {
@@ -413,31 +417,13 @@ export default class QRSigner extends Signer {
   }
 
   signTransaction(index: number, rawTx: TransactionData, cb: Callback<string>) {
-    // Clear stale pending request instead of blocking
-    if (this.pendingSignRequest) {
-      log.warn('Clearing stale pending sign request in signer', {
-        oldType: this.pendingSignRequest.type,
-        oldIndex: this.pendingSignRequest.index
-      })
-      // Don't call callback for old request - it's abandoned
-      this.pendingSignRequest = null
-      this.status = Status.OK
-    }
+    this.failSupersededPendingRequest('transaction')
 
     this.startTransactionSignRequest(index, rawTx, cb)
   }
 
   signTypedData(index: number, typedMessage: TypedMessage, cb: Callback<string>) {
-    // Clear stale pending request instead of blocking
-    if (this.pendingSignRequest) {
-      log.warn('Clearing stale pending sign request in signer', {
-        oldType: this.pendingSignRequest.type,
-        oldIndex: this.pendingSignRequest.index
-      })
-      // Don't call callback for old request - it's abandoned
-      this.pendingSignRequest = null
-      this.status = Status.OK
-    }
+    this.failSupersededPendingRequest('typedData')
 
     const address = this.addresses[index]
     if (!address) {

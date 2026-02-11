@@ -51,6 +51,27 @@ function recoverSenderFromSerializedTx(serializedHex, chainId) {
 }
 
 describe('QRSigner legacy signature compatibility', () => {
+  it('fails the previous callback when a newer request supersedes it', () => {
+    const signer = buildSigner()
+    const address = '0x0000000000000000000000000000000000000001'
+    const firstCallback = jest.fn()
+    const secondCallback = jest.fn()
+
+    signer.addresses = [address]
+
+    signer.signMessage(0, '0x1234', firstCallback)
+    signer.signMessage(0, '0x5678', secondCallback)
+
+    expect(firstCallback).toHaveBeenCalledTimes(1)
+    expect(firstCallback.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(firstCallback.mock.calls[0][0].message).toBe('Signing request replaced by a newer request')
+    expect(firstCallback.mock.calls[0][1]).toBeUndefined()
+
+    expect(secondCallback).not.toHaveBeenCalled()
+    expect(signer.pendingSignRequest).not.toBeNull()
+    expect(signer.pendingSignRequest.data.message).toBe('0x5678')
+  })
+
   it('accepts fallback when signature matches legacy unsigned encoding', async () => {
     const signer = buildSigner()
     const callback = jest.fn()
