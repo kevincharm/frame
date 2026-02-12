@@ -42,7 +42,7 @@ if (process.env.LOG_LEVEL === 'debug') {
 const hasInstanceLock = app.requestSingleInstanceLock()
 
 if (!hasInstanceLock) {
-  log.info('another instance of Frame is running - exiting...')
+  log.info('another instance of Frame Flux is running - exiting...')
   app.exit(1)
 }
 

@@ -1,6 +1,6 @@
 const config = {
-  appId: 'sh.frame.app',
-  productName: 'Frame',
+  appId: 'sh.frame.flux.app',
+  productName: 'Frame Flux',
   files: ['compiled', 'bundle', '!compiled/main/dev']
 }
 
