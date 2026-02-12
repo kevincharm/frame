@@ -14,8 +14,11 @@ class PersistStore extends Conf {
     options = { configFileMode: 0o600, configName: 'config', ...options }
     let defaultCwd = __dirname
     // In tests and restricted environments electron.app.getPath can be undefined/non-string.
-    const userDataPath = electron?.app?.getPath?.('userData')
-    if (typeof userDataPath === 'string' && userDataPath.length > 0) defaultCwd = userDataPath
+    const appDataPath = electron?.app?.getPath?.('appData')
+    if (typeof appDataPath === 'string' && appDataPath.length > 0) {
+      // Keep fork state isolated from upstream Frame.
+      defaultCwd = path.join(appDataPath, 'frame-flux')
+    }
     if (options.cwd) {
       options.cwd = path.isAbsolute(options.cwd) ? options.cwd : path.join(defaultCwd, options.cwd)
     } else {

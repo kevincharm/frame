@@ -38,7 +38,7 @@ const hashFiles = async (path: string, options: UserImporterOptions) => hash(glo
 const getCID = async (path: string, isDirectory = true) => hashFiles(path, { wrapWithDirectory: isDirectory })
 
 export function getDappCacheDir() {
-  return path.join(app.getPath('userData'), 'DappCache')
+  return path.join(app.getPath('appData'), 'frame-flux', 'DappCache')
 }
 
 export async function dappPathExists(dappId: string) {

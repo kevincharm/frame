@@ -12,7 +12,7 @@ const store = require('../../../store').default
 const windows = app ? require('../../../windows') : { broadcast: () => {} }
 // Mock user data dir during tests
 const USER_DATA = app
-  ? app.getPath('userData')
+  ? path.join(app.getPath('appData'), 'frame-flux')
   : path.resolve(path.dirname(require.main.filename), '../.userData')
 const SIGNERS_PATH = path.resolve(USER_DATA, 'signers')
 
