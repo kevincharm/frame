@@ -97,7 +97,7 @@ type M = Main & {
 }
 
 const mainState: M = {
-  _version: main('_version', 41),
+  _version: main('_version', 42),
   instanceId: main('instanceId', generateUuid()),
   colorway: main('colorway', 'dark'),
   colorwayPrimary: {
@@ -388,6 +388,41 @@ const mainState: M = {
         },
         on: false
       },
+      534352: {
+        id: 534352,
+        type: 'ethereum',
+        layer: 'rollup',
+        isTestnet: false,
+        name: 'Scroll',
+        explorer: 'https://scrollscan.com',
+        gas: {
+          price: {
+            selected: 'standard',
+            levels: { slow: '', standard: '', fast: '', asap: '', custom: '' }
+          }
+        },
+        connection: {
+          primary: {
+            on: true,
+            current: 'custom',
+            status: 'loading',
+            connected: false,
+            type: '',
+            network: '',
+            custom: 'https://rpc.scroll.io'
+          },
+          secondary: {
+            on: false,
+            current: 'custom',
+            status: 'loading',
+            connected: false,
+            type: '',
+            network: '',
+            custom: ''
+          }
+        },
+        on: false
+      },
       84532: {
         id: 84532,
         type: 'ethereum',
@@ -628,6 +663,28 @@ const mainState: M = {
         },
         icon: 'https://frame.nyc3.cdn.digitaloceanspaces.com/icons/arbitrum.svg',
         primaryColor: 'accent7' // Arbitrum
+      },
+      534352: {
+        blockHeight: 0,
+        gas: {
+          fees: {},
+          price: {
+            selected: 'standard',
+            levels: { slow: '', standard: '', fast: '', asap: '', custom: '' }
+          }
+        },
+        nativeCurrency: {
+          symbol: 'ETH',
+          usd: {
+            price: 0,
+            change24hr: 0
+          },
+          icon: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
+          name: 'Ether',
+          decimals: 18
+        },
+        icon: 'https://scroll.io/_next/static/media/Scroll_Logomark.13ce0216.png',
+        primaryColor: 'accent3' // Generic
       },
       84532: {
         blockHeight: 0,
