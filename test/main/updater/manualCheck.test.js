@@ -1,5 +1,6 @@
 import log from 'electron-log'
 import nock from 'nock'
+import semver from 'semver'
 
 import checkForUpdates from '../../../main/updater/manualCheck'
 import packageInfo from '../../../package.json'
@@ -14,9 +15,7 @@ const githubReleasesResponse = [
 ]
 
 const currentVersion = packageInfo.version
-const nextVersion =
-  currentVersion.slice(0, currentVersion.length - 1) +
-  (parseInt(currentVersion[currentVersion.length - 1]) + 1)
+const nextVersion = semver.inc(currentVersion, 'patch')
 
 beforeAll(() => {
   jest.useRealTimers()
