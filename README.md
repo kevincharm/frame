@@ -3,7 +3,7 @@
   <img src="/asset/png/FrameLogo512.png?raw=true" alt="Frame" width="150" />
   <br>
   <br>
-  F R A M E
+  F R A M E . F L U X
   <br>
   <br>
 </h2>
