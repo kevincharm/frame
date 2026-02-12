@@ -49,6 +49,18 @@ describe('#signerCompatibility', () => {
     expect(compatibility.compatible).toBe(true)
   })
 
+  it('is always compatible with eip-1559 transactions for qr signers', () => {
+    const tx = {
+      type: '0x2'
+    }
+
+    const compatibility = signerCompatibility(tx, { type: 'qr' })
+
+    expect(compatibility.signer).toBe('qr')
+    expect(compatibility.tx).toBe('london')
+    expect(compatibility.compatible).toBe(true)
+  })
+
   it('is not compatible for eip-1559 transactions on Ledger signers using eth app prior to 1.9.x', () => {
     const appVersion = { major: 1, minor: 7, patch: 4 }
     const tx = {
