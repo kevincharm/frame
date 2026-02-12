@@ -79,8 +79,21 @@ If you use an arch-based distro, you can use an AUR Helper like [yay](https://gi
 
 ```bash
 › pnpm run bundle # Create bundle
-› pnpm run build # Build Frame for current platform
+› pnpm run build # Release-style multi-arch build (expects signing/notarisation setup)
+› pnpm run build:local # Local unsigned single-arch macOS build
 ```
+
+#### Fork Notes (Frame Flux)
+
+- App identity for this fork is `Frame Flux` with bundle id `sh.frame.flux.app`, so it can be installed alongside the original `Frame` app.
+- For day-to-day local installs on macOS, use `pnpm run build:local`.
+- `pnpm run build` is the release-oriented path and may fail locally without full platform signing/notarisation credentials.
+
+#### CI Workflows
+
+- GitHub Actions in this fork are intentionally pruned to compile and test only.
+- Release/publish workflows were removed.
+- Remaining actions are pinned to immutable commit SHAs.
 
 ### Usage
 
