@@ -2,7 +2,12 @@ bundle
 compiled
 dist
 package-lock.json
+.pnpm-store
 .cache
 cache
+.parcel-cache-*
 .vscode
 scratch*
+main/store/persist/config.json
+main/store/persist/config.json
+test/main/signers/hot/.userData

@@ -22,7 +22,7 @@ export class DeviceError extends Error {
   }
 }
 
-const manifest = { email: 'dev@frame.sh', appUrl: 'https://frame.sh' }
+const manifest = { email: 'dev@frame.sh', appUrl: 'https://frame.sh', appName: 'Frame' }
 
 const config = {
   manifest,

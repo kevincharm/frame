@@ -1,5 +1,5 @@
 import log from 'electron-log'
-import pixels from 'get-pixels'
+import { PNG } from 'pngjs'
 import { BrowserWindow, BrowserView } from 'electron'
 
 import { createViewInstance } from '../window'
@@ -25,34 +25,26 @@ function mode(array: string[]) {
 }
 
 async function pixelColor(image: Electron.NativeImage) {
-  return new Promise((resolve, reject) => {
-    pixels(image.toPNG(), 'image/png', (err, pixels) => {
-      if (err) return reject(err)
+  const png = PNG.sync.read(image.toPNG())
+  const colors = []
+  const width = png.width
+  const height = Math.min(37, png.height)
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const idx = (y * width + x) * 4
+      colors.push(`${png.data[idx]}, ${png.data[idx + 1]}, ${png.data[idx + 2]}`)
+    }
+  }
 
-      const colors = []
-      const width = pixels.shape[0]
-      const height = 37
-      const depth = pixels.shape[2]
-      const limit = width * depth * height
-      for (let step = 0; step <= limit; step += depth) {
-        const rgb = []
-        for (let dive = 0; dive < depth; dive++) rgb.push(pixels.data[step + dive])
-        colors.push(`${rgb[0]}, ${rgb[1]}, ${rgb[2]}`)
-      }
+  const selectedColor = mode(colors) || '0, 0, 0'
+  const colorArray = selectedColor.split(', ')
 
-      const selectedColor = mode(colors)
-      const colorArray = selectedColor.split(', ')
-
-      const color = {
-        background: `rgb(${colorArray.join(', ')})`,
-        backgroundShade: `rgb(${colorArray.map((v) => Math.max(parseInt(v) - 5, 0)).join(', ')})`,
-        backgroundLight: `rgb(${colorArray.map((v) => Math.min(parseInt(v) + 50, 255)).join(', ')})`,
-        text: textColor(...(colorArray.map((a) => parseInt(a)) as [number, number, number]))
-      }
-
-      resolve(color)
-    })
-  })
+  return {
+    background: `rgb(${colorArray.join(', ')})`,
+    backgroundShade: `rgb(${colorArray.map((v) => Math.max(parseInt(v) - 5, 0)).join(', ')})`,
+    backgroundLight: `rgb(${colorArray.map((v) => Math.min(parseInt(v) + 50, 255)).join(', ')})`,
+    text: textColor(...(colorArray.map((a) => parseInt(a)) as [number, number, number]))
+  }
 }
 
 async function getColor(view: BrowserView) {

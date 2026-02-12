@@ -13,7 +13,9 @@ class PersistStore extends Conf {
   constructor(options?: PersistOpts<any>) {
     options = { configFileMode: 0o600, configName: 'config', ...options }
     let defaultCwd = __dirname
-    if (electron && electron.app) defaultCwd = electron.app.getPath('userData')
+    // In tests and restricted environments electron.app.getPath can be undefined/non-string.
+    const userDataPath = electron?.app?.getPath?.('userData')
+    if (typeof userDataPath === 'string' && userDataPath.length > 0) defaultCwd = userDataPath
     if (options.cwd) {
       options.cwd = path.isAbsolute(options.cwd) ? options.cwd : path.join(defaultCwd, options.cwd)
     } else {

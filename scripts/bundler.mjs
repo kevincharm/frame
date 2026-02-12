@@ -7,6 +7,8 @@ const host = `http://localhost:${port}`
 
 const bundler = new Parcel({
   defaultConfig: '@parcel/config-default',
+  cacheDir: '.parcel-cache-dev',
+  shouldDisableCache: true,
   entries: [
     'app/tray/index.dev.html',
     'app/dash/index.dev.html',

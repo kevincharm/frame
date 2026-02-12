@@ -1,4 +1,5 @@
 node_modules
+.pnpm-store
 .DS_Store
 bundle
 .cache
@@ -6,11 +7,13 @@ cache
 hot.json
 nohot.json
 config.json
+main/store/persist/config.json
 dist
 compiled
 release
 test/.userData
 .vscode
 .parcel-cache
+.parcel-cache-*
 *.tsbuildinfo
 *.code-workspace

@@ -63,23 +63,23 @@ If you use an arch-based distro, you can use an AUR Helper like [yay](https://gi
 # Clone
 › git clone https://github.com/floating/frame
 
-# Use node v18
-› nvm install 18.12.1
-› nvm use 18.12.1
+# Use node v22
+› nvm install 22.18.0
+› nvm use 22.18.0
 
 
 # Install
-› npm run setup
+› pnpm run setup
 
 # Run
-› npm run prod
+› pnpm run prod
 ```
 
 #### Build
 
 ```bash
-› npm run bundle # Create bundle
-› npm run build # Build Frame for current platform
+› pnpm run bundle # Create bundle
+› pnpm run build # Build Frame for current platform
 ```
 
 ### Usage

@@ -3,10 +3,11 @@ import waitOn from 'wait-on'
 import runBundler from './bundler.mjs'
 
 const isWindows = process.platform === 'win32'
+const packageManager = process.env.npm_config_user_agent?.includes('pnpm') ? 'pnpm' : 'npm'
 
 async function waitForTask(taskName) {
   return new Promise((resolve, reject) => {
-    const ps = spawn('npm', ['run', taskName], { stdio: 'inherit', shell: isWindows })
+    const ps = spawn(packageManager, ['run', taskName], { stdio: 'inherit', shell: isWindows })
 
     ps.once('close', (exitCode) =>
       exitCode === 0 ? resolve() : reject(`${taskName} failed with exit code: ${exitCode}`)
@@ -17,10 +18,8 @@ async function waitForTask(taskName) {
 }
 
 async function prepareEnvironment() {
-  const bundle = waitForTask('bundle:bridge')
-  const compile = waitForTask('compile')
-
-  return Promise.all([bundle, compile])
+  await waitForTask('bundle:bridge')
+  await waitForTask('compile')
 }
 
 async function launchDevServer() {
@@ -35,16 +34,17 @@ async function launchDevServer() {
 }
 
 function launchFrame({ shutdown }) {
-  const npmProcess = spawn('npm', ['run', 'launch:dev'], { stdio: 'inherit', shell: isWindows })
+  const appProcess = spawn(packageManager, ['run', 'launch:dev'], { stdio: 'inherit', shell: isWindows })
 
-  npmProcess.once('exit', () => {
+  appProcess.once('exit', () => {
     console.log('Frame exited')
     shutdown()
   })
 }
 
 async function run() {
-  const [, server] = await Promise.all([prepareEnvironment(), launchDevServer()])
+  await prepareEnvironment()
+  const server = await launchDevServer()
 
   launchFrame(server)
 }
